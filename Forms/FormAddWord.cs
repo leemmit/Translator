@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 using translate.Classes;
 using translate;    
 
@@ -47,24 +48,31 @@ namespace translate.Forms
 
         private void fa_btn_add_Click(object sender, EventArgs e)
         {
-            if (fa_tb_from.Text != "" && fa_tb_to.Text != "" && fa_tb_from.Text != " " && fa_tb_to.Text != " ")
+            if (!string.IsNullOrWhiteSpace(fa_tb_from.Text) && !string.IsNullOrWhiteSpace(fa_tb_to.Text))
             {
                 if (fa_cb_from.SelectedIndex == fa_cb_to.SelectedIndex) MessageBox.Show("Выбранные языки совпадают. Пожалуйста, выберите разные языки");
                 
                 string sourceWord = fa_tb_from.Text;
                 string targetWord = fa_tb_to.Text;
-                if (Mainform.GetTranslations[fa_cb_from.SelectedItem.ToString()][fa_cb_to.SelectedItem.ToString()].ContainsKey(sourceWord))
+                try
                 {
-                    MessageBox.Show("Перевод уже существует");
-                    return;
+                    if (Mainform.GetTranslations[fa_cb_from.SelectedItem.ToString()].ContainsKey(fa_cb_to.SelectedItem.ToString()) && Mainform.GetTranslations[fa_cb_from.SelectedItem.ToString()][fa_cb_to.SelectedItem.ToString()].ContainsKey(sourceWord))
+                    {
+                        MessageBox.Show("Перевод уже существует");
+                        return;
+                    }
+                    else
+                    {
+                        Buttons.AddWordClick(sourceWord, targetWord);
+                        fa_tb_from.Text = "";
+                        Mainform.Tb_Input.Text = sourceWord;
+                        Mainform.Tb_Output.Text = targetWord;
+                        //Close();
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Buttons.AddWordClick(sourceWord, targetWord);
-                    fa_tb_from.Text = "";
-                    Mainform.Tb_Input.Text = sourceWord;
-                    Mainform.Tb_Output.Text = targetWord;
-                    //Close();
+                    MessageBox.Show(ex.ToString());
                 }
             }
             else
@@ -116,6 +124,7 @@ namespace translate.Forms
             if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
             {
                 e.Handled = true; // Отменяем ввод символа
+                SystemSounds.Beep.Play();
             }
         }
 
@@ -124,6 +133,7 @@ namespace translate.Forms
             if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
             {
                 e.Handled = true; // Отменяем ввод символа
+                SystemSounds.Beep.Play();
             }
         }
     }

@@ -10,6 +10,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Windows.Forms;
+using System.Media;
 
 using translate.Forms;
 using translate.Classes;
@@ -122,6 +123,7 @@ namespace translate
             if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
             {
                 e.Handled = true; // Отменяем ввод символа
+                SystemSounds.Beep.Play();
             }
         }
     }
